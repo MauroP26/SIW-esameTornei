@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Squadra</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/admin}">Amministrazione</a></nav>
+	<h1 th:text="${squadraId == null ? 'Nuova squadra' : 'Modifica squadra'}"></h1>
+	<form th:action="${squadraId == null ? '/admin/squadre' : '/admin/squadre/'+squadraId}" th:object="${squadraForm}"
+		method="post">
+		<label>Nome <input th:field="*{nome}"></label><span th:errors="*{nome}"></span><br>
+		<label>Anno fondazione <input type="number" th:field="*{annoFondazione}"></label><span
+			th:errors="*{annoFondazione}"></span><br>
+		<label>Città <input th:field="*{citta}"></label><span th:errors="*{citta}"></span><br><button
+			type="submit">Salva</button>
+	</form>
+</body>
+
+</html>

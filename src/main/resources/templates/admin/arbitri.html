@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Arbitri</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/admin}">Amministrazione</a> | <a th:href="@{/admin/arbitri/nuovo}">Nuovo arbitro</a></nav>
+	<h1>Arbitri</h1>
+	<p th:if="${successo}" th:text="${successo}"></p>
+	<table border="1">
+		<tr>
+			<th>Nome</th>
+			<th>Codice</th>
+			<th>Azioni</th>
+		</tr>
+		<tr th:each="a:${arbitri}">
+			<td th:text="${a.nome+' '+a.cognome}"></td>
+			<td th:text="${a.codiceArbitrale}"></td>
+			<td><a th:href="@{/admin/arbitri/{id}/modifica(id=${a.id})}">Modifica</a>
+				<form style="display:inline" th:action="@{/admin/arbitri/{id}/elimina(id=${a.id})}" method="post">
+					<button onclick="return confirm('Eliminare arbitro?')">Elimina</button></form>
+			</td>
+		</tr>
+	</table>
+</body>
+
+</html>

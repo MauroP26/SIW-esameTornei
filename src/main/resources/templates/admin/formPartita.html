@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title th:text="${partitaId == null ? 'Nuova partita' : 'Modifica partita'}">Partita</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/}">Home</a> | <a th:href="@{/partite}">Partite</a></nav>
+	<h1 th:text="${partitaId == null ? 'Crea una nuova partita' : 'Modifica partita'}"></h1>
+
+	<form th:action="${partitaId == null} ? @{/admin/partite} : @{/admin/partite/{id}(id=${partitaId})}"
+		th:object="${partitaForm}" method="post" novalidate>
+		<div class="alert alert-error" th:if="${#fields.hasAnyErrors()}">
+
+			<p>Il form contiene errori:</p>
+
+			<ul>
+				<li th:each="errore : ${#fields.allErrors()}" th:text="${errore}">
+				</li>
+			</ul>
+		</div>
+		<div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
+			<p th:each="errore : ${#fields.globalErrors()}" th:text="${errore}"></p>
+		</div>
+		<div>
+			<label for="torneoId">Torneo</label>
+			<select id="torneoId" th:field="*{torneoId}">
+				<option value="">-- seleziona --</option>
+				<option th:each="torneo : ${tornei}" th:value="${torneo.id}" th:text="${torneo.nome}"></option>
+			</select>
+			<p th:if="${#fields.hasErrors('torneoId')}" th:errors="*{torneoId}"></p>
+		</div>
+
+		<div>
+			<label for="squadraCasaId">Squadra di casa</label>
+			<select id="squadraCasaId" th:field="*{squadraCasaId}">
+				<option value="">-- seleziona --</option>
+				<option th:each="squadra : ${squadre}" th:value="${squadra.id}" th:text="${squadra.nome}"></option>
+			</select>
+			<p th:if="${#fields.hasErrors('squadraCasaId')}" th:errors="*{squadraCasaId}"></p>
+		</div>
+
+		<div>
+			<label for="squadraOspiteId">Squadra ospite</label>
+			<select id="squadraOspiteId" th:field="*{squadraOspiteId}">
+				<option value="">-- seleziona --</option>
+				<option th:each="squadra : ${squadre}" th:value="${squadra.id}" th:text="${squadra.nome}"></option>
+			</select>
+			<p th:if="${#fields.hasErrors('squadraOspiteId')}" th:errors="*{squadraOspiteId}"></p>
+		</div>
+
+		<div>
+			<label for="arbitroId">Arbitro</label>
+			<select id="arbitroId" th:field="*{arbitroId}">
+				<option value="">-- seleziona --</option>
+				<option th:each="arbitro : ${arbitri}" th:value="${arbitro.id}"
+					th:text="${arbitro.nome + ' ' + arbitro.cognome}"></option>
+			</select>
+			<p th:if="${#fields.hasErrors('arbitroId')}" th:errors="*{arbitroId}"></p>
+		</div>
+
+		<div>
+			<label for="luogo">Luogo</label>
+			<input id="luogo" type="text" th:field="*{luogo}" maxlength="120">
+			<p th:if="${#fields.hasErrors('luogo')}" th:errors="*{luogo}"></p>
+		</div>
+
+		<div>
+			<label for="dataOra">Data e ora</label>
+			<input id="dataOra" type="datetime-local" th:field="*{dataOra}">
+			<p th:if="${#fields.hasErrors('dataOra')}" th:errors="*{dataOra}"></p>
+		</div>
+
+		<button type="submit" th:text="${partitaId == null ? 'Crea partita' : 'Salva modifiche'}"></button>
+	</form>
+</body>
+
+</html>

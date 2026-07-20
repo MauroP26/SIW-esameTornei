@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title th:text="${torneoId == null ? 'Nuovo torneo' : 'Modifica torneo'}">Torneo</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/admin}">Amministrazione</a></nav>
+	<h1 th:text="${torneoId == null ? 'Nuovo torneo' : 'Modifica torneo'}"></h1>
+
+	<form th:action="${torneoId == null} ? @{/admin/tornei} : @{/admin/tornei/{id}(id=${torneoId})}"
+		th:object="${torneoForm}" method="post" novalidate>
+		<div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
+			<p th:each="errore : ${#fields.globalErrors()}" th:text="${errore}"></p>
+		</div>
+
+		<div>
+			<label for="nome">Nome</label>
+			<input id="nome" type="text" th:field="*{nome}">
+			<p th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></p>
+		</div>
+
+		<div>
+			<label for="anno">Anno</label>
+			<input id="anno" type="number" th:field="*{anno}">
+			<p th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}"></p>
+		</div>
+
+		<div>
+			<label for="descrizione">Descrizione</label>
+			<textarea id="descrizione" th:field="*{descrizione}"></textarea>
+			<p th:if="${#fields.hasErrors('descrizione')}" th:errors="*{descrizione}"></p>
+		</div>
+
+		<button type="submit" th:text="${torneoId == null ? 'Crea torneo' : 'Salva modifiche'}">Salva</button>
+	</form>
+</body>
+
+</html>

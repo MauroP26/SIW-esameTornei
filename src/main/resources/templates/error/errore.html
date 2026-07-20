@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title th:text="${titoloErrore}">Errore</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body class="error-page">
+	<main class="error-card">
+		<h1><span th:text="${stato}">500</span> — <span th:text="${titoloErrore}">Errore</span></h1>
+		<p th:text="${messaggioErrore}">Si è verificato un errore.</p>
+		<p th:if="${percorso}">Percorso: <code th:text="${percorso}"></code></p>
+		<a th:href="@{/}">Torna alla home</a>
+	</main>
+</body>
+
+</html>

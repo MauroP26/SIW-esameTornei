@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Risorsa non trovata</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body class="error-page">
+	<main class="error-card">
+		<h1>404 — Risorsa non trovata</h1>
+		<p th:text="${messaggioErrore}">La risorsa richiesta non esiste.</p>
+		<p th:if="${percorso}">Percorso: <code th:text="${percorso}"></code></p>
+		<a th:href="@{/}">Torna alla home</a>
+	</main>
+</body>
+
+</html>

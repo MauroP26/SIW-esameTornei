@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dettaglio partita</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav>
+		<a th:href="@{/}">Home</a> |
+		<a th:href="@{/partite}">Partite</a> |
+		<a th:href="@{/tornei/{id}(id=${partita.torneo.id})}">Torneo</a>
+		<span sec:authorize="isAuthenticated()"> | Utente: <strong sec:authentication="name"></strong></span>
+	</nav>
+
+	<h1 th:text="${partita.home.nome + ' - ' + partita.away.nome}"></h1>
+	<p th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm') + ' · ' + partita.luogo}"></p>
+	<p>Arbitro: <span th:text="${partita.arbitro.nome + ' ' + partita.arbitro.cognome}"></span></p>
+	<h2 th:if="${partita.stato.name() == 'PLAYED'}" th:text="${partita.goalsHome + ' - ' + partita.goalsAway}"></h2>
+	<p th:unless="${partita.stato.name() == 'PLAYED'}">Partita programmata</p>
+
+	<p th:if="${successo}" th:text="${successo}"></p>
+	<p th:if="${erroreCommento}" th:text="${erroreCommento}"></p>
+
+
+	<section sec:authorize="hasRole('ADMIN')">
+		<h2>Gestione amministrativa</h2>
+		<p th:if="${partita.stato.name() == 'SCHEDULED'}"><a
+				th:href="@{/admin/partite/{id}/modifica(id=${partita.id})}">Modifica dati partita</a></p>
+		<form th:action="@{/admin/partite/{id}/arbitro(id=${partita.id})}" method="post">
+			<label>Arbitro
+				<select name="arbitroId" required>
+					<option th:each="a:${arbitri}" th:value="${a.id}" th:selected="${a.id == partita.arbitro.id}"
+						th:text="${a.nome+' '+a.cognome+' ('+a.codiceArbitrale+')'}"></option>
+				</select>
+			</label><button type="submit">Assegna</button>
+		</form>
+		<form th:action="@{/admin/partite/{id}/elimina(id=${partita.id})}" method="post">
+			<button type="submit" onclick="return confirm('Eliminare la partita e tutti i commenti associati?')">Elimina
+				partita</button>
+		</form>
+	</section>
+
+	<section sec:authorize="hasRole('ADMIN')">
+
+		<!-- Partita futura: niente inserimento risultato -->
+		<div th:if="${partita.stato.name() == 'SCHEDULED'
+	                 and (partita.dataOra == null
+	                 or partita.dataOra.isAfter(T(java.time.LocalDateTime).now()))}">
+
+			<h2>Risultato non disponibile</h2>
+
+			<p>
+				Il risultato potrà essere registrato solo dopo l'orario previsto della partita.
+			</p>
+		</div>
+
+		<!-- Partita programmata ma già iniziata/passata: registra il risultato -->
+		<div th:if="${partita.stato.name() == 'SCHEDULED'
+	                 and partita.dataOra != null
+	                 and !partita.dataOra.isAfter(T(java.time.LocalDateTime).now())}">
+
+			<h2>Registra risultato</h2>
+
+			<p th:if="${erroreRisultato}" class="alert alert-error" th:text="${erroreRisultato}">
+			</p>
+
+			<form th:action="@{/admin/partite/{id}/risultato(id=${partita.id})}" th:object="${risultatoForm}"
+				method="post">
+
+				<label for="goalCasa">Gol squadra di casa</label>
+				<input id="goalCasa" type="number" min="0" th:field="*{goalCasa}" required>
+
+				<label for="goalOspiti">Gol squadra ospite</label>
+				<input id="goalOspiti" type="number" min="0" th:field="*{goalOspiti}" required>
+
+				<button type="submit">Salva risultato</button>
+			</form>
+		</div>
+
+		<!-- Partita già giocata: mostra e consenti la correzione -->
+		<div th:if="${partita.stato.name() == 'PLAYED'}">
+
+			<h2>Correggi risultato</h2>
+
+			<p>
+				Risultato attuale:
+				<strong th:text="${partita.goalsHome + ' - ' + partita.goalsAway}">
+				</strong>
+			</p>
+
+			<p th:if="${erroreRisultato}" class="alert alert-error" th:text="${erroreRisultato}">
+			</p>
+
+			<form th:action="@{/admin/partite/{id}/risultato(id=${partita.id})}" th:object="${risultatoForm}"
+				method="post">
+
+				<label for="goalCasaCorrezione">Gol squadra di casa</label>
+				<input id="goalCasaCorrezione" type="number" min="0" th:field="*{goalCasa}" required>
+
+				<label for="goalOspitiCorrezione">Gol squadra ospite</label>
+				<input id="goalOspitiCorrezione" type="number" min="0" th:field="*{goalOspiti}" required>
+
+				<button type="submit">Aggiorna risultato</button>
+			</form>
+		</div>
+
+	</section>
+
+	<section>
+		<h2>Commenti</h2>
+
+		<div sec:authorize="isAnonymous()">
+			<p><a th:href="@{/login}">Accedi</a> per pubblicare un commento.</p>
+		</div>
+
+		<div sec:authorize="isAuthenticated()" th:if="${mioCommento == null}">
+			<h3>Scrivi un commento</h3>
+			<form th:action="@{/commenti/partite/{id}(id=${partita.id})}" method="post">
+				<textarea name="testo" maxlength="1000" rows="4" required th:text="${testoCommento}"
+					placeholder="Inserisci il tuo commento"></textarea>
+				<div><button type="submit">Pubblica</button></div>
+			</form>
+		</div>
+
+		<p th:if="${#lists.isEmpty(commenti)}">Nessun commento.</p>
+		<article th:each="commento : ${commenti}">
+			<header>
+				<strong th:text="${commento.autore.cred.username}"></strong>
+				<small th:text="${#temporals.format(commento.modificatoIl, 'dd/MM/yyyy HH:mm')}"></small>
+			</header>
+
+			<div th:unless="${mioCommento != null and mioCommento.id == commento.id}">
+				<p th:text="${commento.testo}"></p>
+			</div>
+
+			<div sec:authorize="isAuthenticated()" th:if="${mioCommento != null and mioCommento.id == commento.id}">
+				<form th:action="@{/commenti/{id}/modifica(id=${commento.id})}" method="post">
+					<textarea name="testo" maxlength="1000" rows="4" required th:text="${commento.testo}"></textarea>
+					<button type="submit">Salva modifica</button>
+				</form>
+				<form th:action="@{/commenti/{id}/elimina(id=${commento.id})}" method="post">
+					<button type="submit">Elimina commento</button>
+				</form>
+			</div>
+		</article>
+	</section>
+</body>
+
+</html>

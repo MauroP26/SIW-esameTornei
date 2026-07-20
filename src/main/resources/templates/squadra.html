@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Squadra</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/}">Home</a> | <a th:href="@{/squadre}">Squadre</a> <span sec:authorize="hasRole('ADMIN')">| <a
+				th:href="@{/admin}">Amministrazione</a></span></nav>
+	<p th:if="${successo}" th:text="${successo}"></p>
+	<h1 th:text="${squadra.nome}"></h1>
+	<p>Città: <span th:text="${squadra.citta}"></span></p>
+	<p>Anno fondazione: <span th:text="${squadra.annoFondazione}"></span></p>
+	<div sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/squadre/{id}/modifica(id=${squadra.id})}">Modifica
+			squadra</a> | <a th:href="@{/admin/giocatori/nuovo(squadraId=${squadra.id})}">Aggiungi giocatore</a>
+		<form th:action="@{/admin/squadre/{id}/elimina(id=${squadra.id})}" method="post" style="display:inline"><button
+				onclick="return confirm('Eliminare la squadra?')">Elimina squadra</button></form>
+	</div>
+	<h2>Tornei</h2>
+	<ul>
+		<li th:each="t:${squadra.tornei}"><a th:href="@{/tornei/{id}(id=${t.id})}" th:text="${t.nome+' '+t.anno}"></a>
+		</li>
+	</ul>
+	<h2>Giocatori</h2>
+	<table border="1">
+		<tr>
+			<th>Nome</th>
+			<th>Cognome</th>
+			<th>Nascita</th>
+			<th>Ruolo</th>
+			<th>Altezza</th>
+			<th sec:authorize="hasRole('ADMIN')">Azioni</th>
+		</tr>
+		<tr th:each="g:${squadra.giocatori}">
+			<td th:text="${g.nome}"></td>
+			<td th:text="${g.cognome}"></td>
+			<td th:text="${#temporals.format(g.dataNascita,'dd/MM/yyyy')}"></td>
+			<td th:text="${g.ruolo}"></td>
+			<td th:text="${g.altezza}"></td>
+			<td sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/giocatori/{id}/modifica(id=${g.id})}">Modifica</a>
+				<form th:action="@{/admin/giocatori/{id}/elimina(id=${g.id})}" method="post" style="display:inline">
+					<button onclick="return confirm('Eliminare il giocatore?')">Elimina</button></form>
+			</td>
+		</tr>
+	</table>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" th:href="@{/app.css}">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Gestione tornei</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav>
+		<a th:href="@{/}">Home</a>
+		<a th:href="@{/tornei}">Tornei</a>
+		<a th:href="@{/squadre}">Squadre</a>
+		<a th:href="@{/partite}">Partite</a>
+		<a th:href="@{/react-app/index.html}">Area React</a>
+		<a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}">Amministrazione</a>
+		<a sec:authorize="isAnonymous()" th:href="@{/login}">Login</a>
+		<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+			<button type="submit" class="secondary-button">Logout</button>
+		</form>
+	</nav>
+
+	<header class="hero">
+		<div>
+			<p class="eyebrow">Tornei amatoriali</p>
+			<h1>Il calcio, organizzato bene.</h1>
+			<p>Consulta tornei, squadre, calendari, risultati e classifiche da un’unica applicazione.</p>
+		</div>
+		<div class="hero-actions">
+			<a class="button" th:href="@{/tornei}">Esplora i tornei</a>
+			<a class="button secondary-button" th:href="@{/react-app/index.html}">Apri React</a>
+		</div>
+	</header>
+
+	<main class="home-grid">
+		<article class="home-card">
+			<span class="card-kicker">Competizioni</span>
+			<h2>Tornei</h2>
+			<p>Scopri partecipanti, calendario e classifica di ogni competizione.</p>
+			<a th:href="@{/tornei}">Vai ai tornei →</a>
+		</article>
+		<article class="home-card">
+			<span class="card-kicker">Club</span>
+			<h2>Squadre</h2>
+			<p>Consulta le rose, i giocatori e le informazioni delle squadre.</p>
+			<a th:href="@{/squadre}">Vai alle squadre →</a>
+		</article>
+		<article class="home-card">
+			<span class="card-kicker">Calendario</span>
+			<h2>Partite</h2>
+			<p>Controlla gli incontri programmati e i risultati già registrati.</p>
+			<a th:href="@{/partite}">Vai alle partite →</a>
+		</article>
+	</main>
+
+	<section class="admin-banner" sec:authorize="hasRole('ADMIN')">
+		<strong>Area amministrativa</strong>
+		<p>Puoi creare una nuova partita o gestire tutti i dati del portale.</p>
+		<a class="button" th:href="@{/admin/partite/nuova}">Crea una partita</a>
+	</section>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dettaglio torneo</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/}">Home</a> | <a th:href="@{/tornei}">Tornei</a> | <a th:href="@{/squadre}">Squadre</a> | <a
+			th:href="@{/partite}">Partite</a> <span sec:authorize="hasRole('ADMIN')">| <a
+				th:href="@{/admin}">Amministrazione</a></span></nav>
+	<p th:if="${successo}" th:text="${successo}"></p>
+	<h1 th:text="${torneo.nome}"></h1>
+	<p>Anno: <span th:text="${torneo.anno}"></span></p>
+	<p th:text="${torneo.descrizione}"></p>
+	<div sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/tornei/{id}/modifica(id=${torneo.id})}">Modifica
+			torneo</a>
+		<form th:action="@{/admin/tornei/{id}/elimina(id=${torneo.id})}" method="post" style="display:inline"><button
+				onclick="return confirm('Eliminare il torneo e tutte le partite?')">Elimina torneo</button></form>
+	</div>
+	<h2>Squadre partecipanti</h2>
+	<ul>
+		<li th:each="squadra : ${torneo.squadre}"><a th:href="@{/squadre/{id}(id=${squadra.id})}"
+				th:text="${squadra.nome}"></a>
+			<form sec:authorize="hasRole('ADMIN')"
+				th:action="@{/admin/tornei/{tid}/squadre/{sid}/rimuovi(tid=${torneo.id},sid=${squadra.id})}"
+				method="post" style="display:inline"><button>Rimuovi</button></form>
+		</li>
+	</ul>
+	<form sec:authorize="hasRole('ADMIN')" th:action="@{/admin/tornei/{id}/squadre(id=${torneo.id})}" method="post">
+		<select name="squadraId" required>
+			<option value="">-- associa squadra --</option>
+			<option th:each="s:${tutteSquadre}" th:unless="${torneo.squadre.contains(s)}" th:value="${s.id}"
+				th:text="${s.nome}"></option>
+		</select><button>Associa</button></form>
+	<h2>Classifica</h2>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Squadra</th>
+				<th>Pt</th>
+				<th>V</th>
+				<th>N</th>
+				<th>P</th>
+				<th>GF</th>
+				<th>GS</th>
+				<th>DR</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="riga, stato : ${classifica}">
+				<td th:text="${stato.count}"></td>
+				<td th:text="${riga.squadra.nome}"></td>
+				<td th:text="${riga.punti}"></td>
+				<td th:text="${riga.vittorie}"></td>
+				<td th:text="${riga.pareggi}"></td>
+				<td th:text="${riga.sconfitte}"></td>
+				<td th:text="${riga.goalFatti}"></td>
+				<td th:text="${riga.goalSubiti}"></td>
+				<td th:text="${riga.differenzaReti}"></td>
+			</tr>
+		</tbody>
+	</table>
+	<h2>Calendario</h2>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>Data</th>
+				<th>Partita</th>
+				<th>Luogo</th>
+				<th>Stato/risultato</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="partita : ${calendario}">
+				<td th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}"></td>
+				<td><a th:href="@{/partite/{id}(id=${partita.id})}"
+						th:text="${partita.home.nome + ' - ' + partita.away.nome}"></a></td>
+				<td th:text="${partita.luogo}"></td>
+				<td
+					th:text="${partita.stato.name() == 'PLAYED' ? partita.goalsHome + ' - ' + partita.goalsAway : 'Da giocare'}">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+
+</html>

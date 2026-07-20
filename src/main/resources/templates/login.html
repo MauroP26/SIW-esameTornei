@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Accedi</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body class="login-page">
+	<main class="login-shell">
+		<p class="eyebrow">Area riservata</p>
+		<h1>Accedi</h1>
+		<p>Inserisci le credenziali per commentare o amministrare il portale.</p>
+		<p th:if="${param.error}" class="field-error">Username o password non validi.</p>
+		<p th:if="${param.logout}">Logout effettuato correttamente.</p>
+		<form th:action="@{/login}" method="post">
+			<label for="username">Username
+				<input id="username" type="text" name="username" autocomplete="username" placeholder="Il tuo username"
+					required autofocus>
+			</label>
+			<label for="password">Password
+				<input id="password" type="password" name="password" autocomplete="current-password"
+					placeholder="La tua password" required>
+			</label>
+			<button type="submit">Accedi</button>
+		</form>
+		<a class="back-link" th:href="@{/}">← Torna alla home</a>
+	</main>
+</body>
+
+</html>

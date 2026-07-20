@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Giocatore</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/admin}">Amministrazione</a></nav>
+	<h1 th:text="${giocatoreId == null ? 'Nuovo giocatore' : 'Modifica giocatore'}"></h1>
+	<form th:action="${giocatoreId == null ? '/admin/giocatori' : '/admin/giocatori/'+giocatoreId}"
+		th:object="${giocatoreForm}" method="post">
+		<label>Nome <input th:field="*{nome}"></label><span th:errors="*{nome}"></span><br>
+		<label>Cognome <input th:field="*{cognome}"></label><span th:errors="*{cognome}"></span><br>
+		<label>Data di nascita <input type="date" th:field="*{dataNascita}"></label><span
+			th:errors="*{dataNascita}"></span><br>
+		<label>Ruolo <select th:field="*{ruolo}">
+				<option value="">-- seleziona --</option>
+				<option th:each="r:${ruoli}" th:value="${r}" th:text="${r}"></option>
+			</select></label><span th:errors="*{ruolo}"></span><br>
+		<label>Altezza (m) <input type="number" step="0.01" th:field="*{altezza}"></label><span
+			th:errors="*{altezza}"></span><br>
+		<label>Squadra <select th:field="*{squadraId}">
+				<option value="">-- seleziona --</option>
+				<option th:each="s:${squadre}" th:value="${s.id}" th:text="${s.nome}"></option>
+			</select></label><span th:errors="*{squadraId}"></span><br><button type="submit">Salva</button>
+	</form>
+</body>
+
+</html>

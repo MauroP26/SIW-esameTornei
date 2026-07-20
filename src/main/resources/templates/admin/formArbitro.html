@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Arbitro</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/admin}">Amministrazione</a> | <a th:href="@{/admin/arbitri}">Arbitri</a></nav>
+	<h1 th:text="${arbitroId == null ? 'Nuovo arbitro' : 'Modifica arbitro'}"></h1>
+	<form th:action="${arbitroId == null} ? @{/admin/arbitri} : @{/admin/arbitri/{id}(id=${arbitroId})}"
+		th:object="${arbitroForm}" method="post">
+		<label>Nome <input th:field="*{nome}"></label>
+		<p th:errors="*{nome}"></p>
+		<label>Cognome <input th:field="*{cognome}"></label>
+		<p th:errors="*{cognome}"></p>
+		<label>Codice arbitrale <input th:field="*{codiceArbitrale}"></label>
+		<p th:errors="*{codiceArbitrale}"></p>
+		<button type="submit">Salva</button>
+	</form>
+</body>
+
+</html>

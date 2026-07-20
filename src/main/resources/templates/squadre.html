@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Squadre</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/}">Home</a> | <a th:href="@{/tornei}">Tornei</a> | <a th:href="@{/partite}">Partite</a></nav>
+	<h1>Squadre</h1>
+	<ul>
+		<li th:each="squadra : ${squadre}"><a th:href="@{/squadre/{id}(id=${squadra.id})}"
+				th:text="${squadra.nome}"></a></li>
+	</ul>
+</body>
+
+</html>

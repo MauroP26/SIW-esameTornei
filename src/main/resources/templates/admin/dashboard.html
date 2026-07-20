@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Amministrazione</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/}">Home</a> | <a th:href="@{/tornei}">Tornei</a> | <a th:href="@{/squadre}">Squadre</a> | <a
+			th:href="@{/partite}">Partite</a></nav>
+	<h1>Pannello amministrativo</h1>
+	<p th:if="${successo}" th:text="${successo}"></p>
+	<p><a th:href="@{/admin/tornei/nuovo}">Nuovo torneo</a> | <a th:href="@{/admin/squadre/nuova}">Nuova squadra</a> |
+		<a th:href="@{/admin/giocatori/nuovo}">Nuovo giocatore</a> | <a th:href="@{/admin/partite/nuova}">Nuova
+			partita</a> | <a th:href="@{/admin/arbitri}">Gestisci arbitri</a></p>
+	<h2>Tornei</h2>
+	<table border="1">
+		<tr>
+			<th>Nome</th>
+			<th>Anno</th>
+			<th>Azioni</th>
+		</tr>
+		<tr th:each="t:${tornei}">
+			<td><a th:href="@{/tornei/{id}(id=${t.id})}" th:text="${t.nome}"></a></td>
+			<td th:text="${t.anno}"></td>
+			<td><a th:href="@{/admin/tornei/{id}/modifica(id=${t.id})}">Modifica</a>
+				<form th:action="@{/admin/tornei/{id}/elimina(id=${t.id})}" method="post" style="display:inline"><button
+						type="submit" onclick="return confirm('Eliminare il torneo e le sue partite?')">Elimina</button>
+				</form>
+			</td>
+		</tr>
+	</table>
+	<h2>Squadre</h2>
+	<table border="1">
+		<tr>
+			<th>Nome</th>
+			<th>Città</th>
+			<th>Azioni</th>
+		</tr>
+		<tr th:each="s:${squadre}">
+			<td><a th:href="@{/squadre/{id}(id=${s.id})}" th:text="${s.nome}"></a></td>
+			<td th:text="${s.citta}"></td>
+			<td><a th:href="@{/admin/squadre/{id}/modifica(id=${s.id})}">Modifica</a>
+				<form th:action="@{/admin/squadre/{id}/elimina(id=${s.id})}" method="post" style="display:inline">
+					<button type="submit" onclick="return confirm('Eliminare la squadra?')">Elimina</button></form>
+			</td>
+		</tr>
+	</table>
+	<h2>Partite</h2>
+	<p><a th:href="@{/partite}">Apri calendario e gestione partite</a></p>
+	<h2>Giocatori</h2>
+	<p th:text="${'Totale: '+giocatori.size()}"></p>
+</body>
+
+</html>

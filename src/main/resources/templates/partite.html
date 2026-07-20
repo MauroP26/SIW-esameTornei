@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Partite</title>
+	<link rel="stylesheet" th:href="@{/app.css}">
+</head>
+
+<body>
+	<nav><a th:href="@{/}">Home</a> | <a th:href="@{/tornei}">Tornei</a> | <a th:href="@{/squadre}">Squadre</a></nav>
+	<h1>Calendario partite</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>Data</th>
+				<th>Torneo</th>
+				<th>Partita</th>
+				<th>Stato</th>
+				<th sec:authorize="hasRole('ADMIN')">Azioni</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="partita : ${partite}">
+				<td th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}"></td>
+				<td th:text="${partita.torneo.nome}"></td>
+				<td><a th:href="@{/partite/{id}(id=${partita.id})}"
+						th:text="${partita.home.nome + ' - ' + partita.away.nome}"></a></td>
+				<td th:text="${partita.stato}"></td>
+				<td sec:authorize="hasRole('ADMIN')"><a th:if="${partita.stato.name() == 'SCHEDULED'}"
+						th:href="@{/admin/partite/{id}/modifica(id=${partita.id})}">Modifica</a>
+					<form style="display:inline" th:action="@{/admin/partite/{id}/elimina(id=${partita.id})}"
+						method="post"><button onclick="return confirm('Eliminare la partita?')">Elimina</button></form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+
+</html>
