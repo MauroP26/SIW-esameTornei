@@ -132,11 +132,3 @@ src/main/java/it/unirom3/siw/
 ├── security/     autenticazione e autorizzazione
 └── service/      logica applicativa e transazioni
 ```
-
-## Documentazione per la consegna
-
-- [`CHECKLIST_CONSEGNA.md`](CHECKLIST_CONSEGNA.md): controlli prima del caricamento su GitHub;
-- [`GUIDA_ORALE.md`](GUIDA_ORALE.md): percorso consigliato per la presentazione;
-- [`STATO_PROGETTO.md`](STATO_PROGETTO.md): riepilogo delle milestone;
-- [`TESTING.md`](TESTING.md): strategia di test;
-- [`GUIDA_BENCHMARK_JPA.md`](GUIDA_BENCHMARK_JPA.md): esperimento sulle prestazioni.
