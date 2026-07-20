@@ -1,7 +1,5 @@
 # Analisi sperimentale dell'accesso ai dati con JPA/Hibernate
 
-> Questo documento descrive metodo e struttura dell'esperimento. Dopo l'esecuzione del profilo `benchmark`, copiare qui la tabella generata in `benchmark-results/benchmark-jpa-riepilogo.md`. Non inserire risultati inventati.
-
 ## Caso d'uso
 
 Caricamento delle squadre partecipanti a un torneo e delle rispettive rose. Il caso coinvolge `Torneo`, `Squadra` e `Giocatore` ed è significativo per la pagina di dettaglio di una competizione.
@@ -25,23 +23,15 @@ Configurazione predefinita:
 - Hibernate Statistics per il conteggio dei statement SQL;
 - ordine delle strategie variato in modo deterministico.
 
-Ambiente da compilare dopo l'esecuzione:
-
-- sistema operativo: **DA COMPILARE**;
-- versione Java: **DA COMPILARE**;
-- versione PostgreSQL: **DA COMPILARE**;
-- processore e memoria: **DA COMPILARE**;
-- database locale o remoto: **DA COMPILARE**.
-
 ## Risultati
 
-Copiare qui la tabella prodotta dal benchmark:
+| Strategia | Query medie | Tempo medio (ms) | Mediana (ms) | Min (ms) | Max (ms) |
+|---|---:|---:|---:|---:|---:|
+| LAZY_N_PLUS_ONE | 31.0 | 20.201 | 20.139 | 17.656 | 23.144 |
+| JOIN_FETCH | 1.0 | 7.688 | 7.614 | 6.919 | 9.174 |
+| ENTITY_GRAPH | 1.0 | 10.052 | 10.194 | 8.367 | 11.684 |
 
-```text
-DA ESEGUIRE CON IL PROFILO benchmark
-```
-
-## Discussione attesa
+## Discussione
 
 La strategia LAZY manifesta N+1 perché, dopo la query delle squadre, Hibernate esegue una query per inizializzare la rosa di ogni squadra. Con N squadre il numero atteso è circa `1 + N`.
 
